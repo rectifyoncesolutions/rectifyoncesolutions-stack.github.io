@@ -1,1 +1,128 @@
-Secured
+import React, { useState } from "react";
+import "./App.css";
+
+const WHATSAPP_PHONE = "2349169097396";
+
+const products = [
+  {
+    id: "native",
+    name: "Native Wears",
+    description: "Beautiful handmade native attires for every occasion.",
+    priceNaira: 25000,
+    priceDollar: 30,
+    examplePic: "native.jpg",
+  },
+  {
+    id: "english",
+    name: "English Wears",
+    description: "Premium English wears tailored to fit you perfectly.",
+    priceNaira: 30000,
+    priceDollar: 35,
+    examplePic: "english.jpg",
+  },
+  {
+    id: "office",
+    name: "Office Wears",
+    description: "Classy and smart office wears for professionals.",
+    priceNaira: 35000,
+    priceDollar: 40,
+    examplePic: "office.jpg",
+  },
+  {
+    id: "cultural",
+    name: "Cultural Attires",
+    description: "Elegant cultural attire for festivals & traditional events.",
+    priceNaira: 28000,
+    priceDollar: 32,
+    examplePic: "cultural.jpg",
+  },
+];
+
+function App() {
+  const [selectedProduct, setSelectedProduct] = useState(products[0].id);
+  const [design, setDesign] = useState(null);
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+
+  const current = products.find((p) => p.id === selectedProduct);
+
+  const onFileChange = (e) => {
+    setDesign(e.target.files[0]);
+  };
+
+  const sendOrder = () => {
+    const message = `*New Clothing Order!*\n\nName: ${name}\nAddress: ${address}\nProduct: ${current.name}\nPrice: ₦${current.priceNaira} / $${current.priceDollar}\n\nDesign: ${design ? "Image attached" : "No image attached"}\n\nCompany: Rectify Once Solutions, Registered in Lagos, Nigeria.`;
+    const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+  };
+
+  return (
+    <div className="App">
+      <header>
+        <h1>Rectify Once Solutions Fashion Shop</h1>
+        <p>
+          Registered Company - RC: 1234567 <br />
+          Lagos, Nigeria | WhatsApp: <a href={`https://wa.me/${WHATSAPP_PHONE}`} target="_blank" rel="noopener">09169097396</a>
+        </p>
+      </header>
+      <main>
+        <section>
+          <h2>Order Attire</h2>
+          <div className="product-select">
+            <label>
+              Select Style:
+              <select
+                value={selectedProduct}
+                onChange={e => setSelectedProduct(e.target.value)}
+              >
+                {products.map((p) => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </label>
+            <div className="product-info">
+              <img src={current.examplePic} alt={current.name} className="example-pic"/>
+              <div>
+                <p>{current.description}</p>
+                <div>Price: <strong>₦{current.priceNaira}</strong> or <strong>${current.priceDollar}</strong></div>
+              </div>
+            </div>
+            <label>
+              Upload design image: <input type="file" accept="image/*" onChange={onFileChange}/>
+            </label>
+            {design && <div>Design image selected: {design.name}</div>}
+          </div>
+          <div className="customer-form">
+            <label>
+              Your Name: <input value={name} onChange={e=>setName(e.target.value)} />
+            </label>
+            <label>
+              Delivery Address: <input value={address} onChange={e=>setAddress(e.target.value)} />
+            </label>
+            <button onClick={sendOrder} disabled={!name || !address}>Send Order via WhatsApp</button>
+          </div>
+        </section>
+        <section>
+          <h2>Visual Chart (Sample)</h2>
+          <img src="chart-example.jpg" className="chart-img" alt="Product chart example" />
+        </section>
+        <section>
+          <h2>Pictorial Gallery</h2>
+          <div className="gallery">
+            <img src="native.jpg" alt="Native Wear" />
+            <img src="english.jpg" alt="English Wear" />
+            <img src="office.jpg" alt="Office Wear" />
+            <img src="cultural.jpg" alt="Cultural Wear" />
+          </div>
+        </section>
+      </main>
+      <footer>
+        <small>
+          &copy; 2025 Rectify Once Solutions. RC:1234567 | Anyone can order!<br />For support, WhatsApp: 09169097396
+        </small>
+      </footer>
+    </div>
+  );
+}
+
+export default App;
